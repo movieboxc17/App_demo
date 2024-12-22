@@ -1,11 +1,11 @@
 {
-    "name": "Polished Web App",
-    "short_name": "WebApp",
-    "description": "A polished web app with sliding menu and dynamic content.",
+    "name": "Photography Portfolio",
+    "short_name": "Portfolio",
+    "description": "A professional photography portfolio showcasing stunning images.",
     "start_url": "./index.html",
     "display": "standalone",
-    "background_color": "#2b2b2b",
-    "theme_color": "#2b2b2b",
+    "background_color": "#121212",
+    "theme_color": "#121212",
     "icons": [
         {
             "src": "icon-192.png",
