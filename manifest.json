@@ -3,6 +3,7 @@
     "short_name": "Portfolio",
     "description": "A professional photography portfolio showcasing stunning images.",
     "start_url": "./index.html",
+    "scope": "./",
     "display": "standalone",
     "background_color": "#121212",
     "theme_color": "#121212",
