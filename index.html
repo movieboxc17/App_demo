@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PWA App</title>
+    <title>Polished Web App</title>
     <meta name="theme-color" content="#2b2b2b">
 
     <style>
+        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #2b2b2b;
             color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        #app {
             text-align: center;
             padding: 20px;
         }
 
-        #app {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #1f1f1f;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        h1, p {
+            margin: 10px 0;
         }
 
         button {
@@ -32,91 +34,176 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s ease, transform 0.3s ease;
         }
 
         button:hover {
             background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* Sliding Menu Styles */
+        #side-menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #444;
+            color: #fff;
+            overflow-y: auto;
+            transition: left 0.5s ease;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        #side-menu.open {
+            left: 0;
+        }
+
+        #side-menu h2 {
+            text-align: center;
+            padding: 15px;
+            background-color: #333;
+            margin: 0;
+        }
+
+        #side-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #side-menu ul li {
+            padding: 15px;
+            border-bottom: 1px solid #555;
+        }
+
+        #side-menu ul li a {
+            text-decoration: none;
+            color: #ffffff;
+            display: block;
+            transition: background 0.3s ease;
+        }
+
+        #side-menu ul li a:hover {
+            background-color: #555;
+        }
+
+        /* Overlay for Menu */
+        #menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        #menu-overlay.show {
+            display: block;
+        }
+
+        /* Dynamic Content Section */
+        #content {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #content h2 {
+            font-size: 1.5em;
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #444;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%; /* Show above the tooltip */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #side-menu {
+                width: 200px;
+            }
+
+            #app {
+                padding: 10px;
+            }
         }
     </style>
 
     <script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('Service Worker Registered'))
-                .catch(err => console.error('Service Worker Registration Failed:', err));
+        // Toggle Sliding Menu
+        function toggleMenu() {
+            const sideMenu = document.getElementById('side-menu');
+            const overlay = document.getElementById('menu-overlay');
+            const isOpen = sideMenu.classList.contains('open');
+            sideMenu.classList.toggle('open', !isOpen);
+            overlay.classList.toggle('show', !isOpen);
         }
 
-        // Service Worker Script
-        const serviceWorkerCode = `
-            const CACHE_NAME = 'pwa-cache-v1';
-            const urlsToCache = [
-                '/',
-                '/index.html',
-                '/manifest.json'
-            ];
-
-            self.addEventListener('install', event => {
-                event.waitUntil(
-                    caches.open(CACHE_NAME).then(cache => {
-                        return cache.addAll(urlsToCache);
-                    })
-                );
-            });
-
-            self.addEventListener('fetch', event => {
-                event.respondWith(
-                    caches.match(event.request).then(response => {
-                        return response || fetch(event.request);
-                    })
-                );
-            });
-        `;
-
-        // Dynamically create the Service Worker file
-        const blob = new Blob([serviceWorkerCode], { type: 'text/javascript' });
-        const serviceWorkerURL = URL.createObjectURL(blob);
-        navigator.serviceWorker.register(serviceWorkerURL);
-    </script>
-
-    <script>
-        // Dynamically create manifest.json
-        const manifest = {
-            name: "My PWA App",
-            short_name: "PWA App",
-            description: "A simple Progressive Web App example.",
-            start_url: "./",
-            display: "standalone",
-            background_color: "#2b2b2b",
-            theme_color: "#2b2b2b",
-            icons: [
-                {
-                    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAQCAYAAACoXK69AAAAEElEQVR42mNk+M/wHwAF/wB/cmnI+oAAAAAASUVORK5CYII=",
-                    sizes: "192x192",
-                    type: "image/png"
-                },
-                {
-                    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAFUlEQVR42mNk+M/wHwAF+wH/wV4R/+wAAAABJRU5ErkJggg==",
-                    sizes: "512x512",
-                    type: "image/png"
-                }
-            ]
-        };
-
-        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-        const manifestURL = URL.createObjectURL(manifestBlob);
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = manifestURL;
-        document.head.appendChild(link);
+        // Load Dynamic Content
+        function loadContent(option) {
+            const content = document.getElementById('content');
+            if (option === 'websites') {
+                content.innerHTML = `
+                    <h2>Check Out Our Other Websites</h2>
+                    <ul>
+                        <li><a href="https://example.com" target="_blank">Example Website 1</a></li>
+                        <li><a href="https://example.com" target="_blank">Example Website 2</a></li>
+                        <li><a href="https://example.com" target="_blank">Example Website 3</a></li>
+                    </ul>`;
+            } else {
+                content.innerHTML = `<h2>Feature Coming Soon</h2>`;
+            }
+            toggleMenu();
+        }
     </script>
 </head>
 <body>
+    <!-- Sliding Menu -->
+    <div id="side-menu">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="#" onclick="loadContent('websites')">Check Out Our Other Websites</a></li>
+            <li><a href="#" onclick="loadContent('feature')">Future Feature</a></li>
+        </ul>
+    </div>
+    <div id="menu-overlay" onclick="toggleMenu()"></div>
+
+    <!-- App Content -->
     <div id="app">
-        <h1>Welcome to My PWA!</h1>
-        <p>This is a simple app you can add to your Home Screen.</p>
-        <button onclick="alert('Hello from the app!')">Click Me</button>
+        <h1>Welcome to the Web App</h1>
+        <p>This app has a sliding menu and dynamic content!</p>
+        <button onclick="toggleMenu()">Open Menu</button>
+
+        <!-- Dynamic Content -->
+        <div id="content"></div>
     </div>
 </body>
 </html>
